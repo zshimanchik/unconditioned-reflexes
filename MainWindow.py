@@ -24,7 +24,7 @@ class gui():
 
         self.window = builder.get_object("applicationwindow1")
         self.drawing_area = builder.get_object("drawingarea1")
-        self.lbl_size = builder.get_object("lbl_size")
+        self.debug_lbl = builder.get_object("debug_lbl")
 
         self.window.realize()
         self.window.set_reallocate_redraws(True)
@@ -36,12 +36,13 @@ class gui():
 
         self.window.show_all()
 
-        self.timer_interval = 500
-        self.timer_id = GObject.timeout_add(300, self.on_timer_event)
+        self.timer_interval = builder.get_object("timer_adjustment").get_value()
+        self.timer_id = GObject.timeout_add(self.timer_interval, self.on_timer_event)
 
         self.selected_animal = None
         self.is_food_smell = False
 
+        self.dbg_text = ""
 
     def on_configure(self, widget, event):
         self.world.width = widget.get_allocated_width()
@@ -86,21 +87,31 @@ class gui():
 
 
     def on_timer_event(self):
-        if self.selected_animal:
-            print(self.selected_animal.answer)
         self.world.update()
+
         if self.animal_info_window:
             self.animal_info_window.update_graphics()
             self.animal_info_window.drawing_area.queue_draw()
+
         self.drawing_area.queue_draw()
-        self.lbl_size.set_text("animal count=" + str(len(self.world.animals)))
+
+        self.add_to_dbg("animal count=" + str(len(self.world.animals)))
+        self.add_to_dbg("world time={}".format(self.world.time))
+        self.debug_lbl.set_text(self.dbg_text)
+        self.dbg_text = ""
         return True
 
-    def on_scrollbar1_change_value(self, *args):
-        self.timer_interval = args[2]
+    def add_to_dbg(self, text):
+        self.dbg_text += text + "\n"
+
+    def on_timer_adjustment_value_changed(self, adj):
+        self.timer_interval = adj.get_value()
         if self.timer_id:
             GObject.source_remove(self.timer_id)
             self.timer_id = GObject.timeout_add(self.timer_interval, self.on_timer_event)
+
+    def on_food_timer_adj_value_changed(self, adj):
+        self.world.food_timer = adj.get_value()
 
     def on_pause_button_clicked(self, *args):
         if self.timer_id:

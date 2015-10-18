@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkAction" id="action1"/>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="lower">5</property>
+  <object class="GtkAdjustment" id="food_timer_adj">
+    <property name="lower">20</property>
+    <property name="upper">500</property>
+    <property name="value">180</property>
+    <property name="step_increment">20</property>
+    <property name="page_increment">50</property>
+    <signal name="value-changed" handler="on_food_timer_adj_value_changed" swapped="no"/>
+  </object>
+  <object class="GtkAdjustment" id="timer_adjustment">
+    <property name="lower">1</property>
     <property name="upper">400</property>
-    <property name="value">300</property>
-    <property name="step_increment">25</property>
-    <property name="page_increment">100</property>
-    <property name="page_size">25</property>
+    <property name="value">30</property>
+    <property name="step_increment">5</property>
+    <property name="page_increment">25</property>
+    <signal name="value-changed" handler="on_timer_adjustment_value_changed" swapped="no"/>
   </object>
   <object class="GtkApplicationWindow" id="applicationwindow1">
     <property name="width_request">-1</property>
@@ -95,24 +103,6 @@
                   <packing>
                     <property name="x">8</property>
                     <property name="y">5</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScrollbar" id="scrollbar1">
-                    <property name="width_request">194</property>
-                    <property name="height_request">24</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="receives_default">True</property>
-                    <property name="events">GDK_STRUCTURE_MASK | GDK_SCROLL_MASK</property>
-                    <property name="valign">baseline</property>
-                    <property name="adjustment">adjustment1</property>
-                    <property name="round_digits">1</property>
-                    <signal name="change-value" handler="on_scrollbar1_change_value" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="x">106</property>
-                    <property name="y">10</property>
                   </packing>
                 </child>
                 <child>
@@ -210,52 +200,57 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="box4">
-                    <property name="width_request">100</property>
-                    <property name="height_request">79</property>
+                  <object class="GtkSpinButton" id="spinbutton1">
+                    <property name="width_request">114</property>
+                    <property name="height_request">33</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="lbl_size">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">label</property>
-                        <property name="xalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label2">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">label</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label3">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">label</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">timer_adjustment</property>
                   </object>
                   <packing>
-                    <property name="x">144</property>
+                    <property name="x">103</property>
+                    <property name="y">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="spinbutton2">
+                    <property name="width_request">114</property>
+                    <property name="height_request">33</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">food_timer_adj</property>
+                    <property name="value">180</property>
+                  </object>
+                  <packing>
+                    <property name="x">97</property>
+                    <property name="y">161</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property name="width_request">85</property>
+                    <property name="height_request">20</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">food timer</property>
+                  </object>
+                  <packing>
+                    <property name="x">10</property>
+                    <property name="y">165</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="debug_lbl">
+                    <property name="width_request">167</property>
+                    <property name="height_request">105</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">debug label</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">122</property>
                     <property name="y">48</property>
                   </packing>
                 </child>

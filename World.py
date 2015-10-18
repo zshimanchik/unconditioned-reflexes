@@ -21,8 +21,10 @@ class World(object):
         self.animals_to_add = []
         # self.animals[0].DEBUG = True
         self.food = [Food(randint(3, self.width), randint(3, self.height), randint(4,10)) for _ in range(10)]
+        self.time = 0
 
     def update(self):
+        self.time += 1
         for animal in self.animals:
             self.check_animal_in_bounds(animal)
             sensor_values = map(self.get_sensor_value, animal.sensors_positions)

@@ -86,6 +86,8 @@ class gui():
 
 
     def on_timer_event(self):
+        if self.selected_animal:
+            print(self.selected_animal.answer)
         self.world.update()
         if self.animal_info_window:
             self.animal_info_window.update_graphics()

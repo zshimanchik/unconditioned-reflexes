@@ -9,6 +9,7 @@ def distance(x1, y1, x2, y2):
 
 
 class World(object):
+    MAX_ANIMAL_COUNT = 100
     MAX_EATING_DISTANCE = 20
     EATING_VALUE = 0.03
 

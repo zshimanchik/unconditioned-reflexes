@@ -1,6 +1,6 @@
 __author__ = 'zshimanchik'
 import math
-import random
+from random import random, randint
 
 from NeuralNetwork.NeuralNetwork import NeuralNetwork
 from NeuralNetwork.Neuron import Neuron
@@ -10,7 +10,7 @@ TWO_PI = math.pi * 2
 
 
 class Food(object):
-    SMELL_SIZE_RATIO = 8.0
+    SMELL_SIZE_RATIO = 13.0
     def __init__(self, x, y, size):
         self.x = x
         self.y = y
@@ -39,10 +39,14 @@ class Animal(object):
     CHANGE_TO_BUD = 0.005
     ENERGY_FOR_BUD = 2
 
+    MUTATE_VALUE = 0.4
+    HALF_MUTATE_VALUE = MUTATE_VALUE / 2
+    MUTATE_CHANCE = 0.6
+
     def __init__(self, world):
         self.world = world
-        self._x = random.randint(0, self.world.width)
-        self._y = random.randint(0, self.world.height)
+        self._x = randint(0, self.world.width)
+        self._y = randint(0, self.world.height)
         self.size = 7
         self.angle = 0
 
@@ -55,7 +59,9 @@ class Animal(object):
 
         self.energy = 10
 
-        self.brain = NeuralNetwork([self.sensor_count, 5, 2])
+        self.brain = NeuralNetwork([self.sensor_count, 2, 2])
+        # import BrainTrainer
+        # self.brain = clone_brain(BrainTrainer.get_new_brain(self.sensor_count))
 
     @property
     def sensors_positions(self):
@@ -87,23 +93,25 @@ class Animal(object):
     def update(self, sensor_values):
         self.sensor_values = sensor_values
         answer = self.brain.calculate(sensor_values)
+        self.answer = answer
         if self.DEBUG:
             print(("answ=" + "{:.6f} " * len(answer) + "\tinp=" + "{:.6f} " * len(self.sensor_values)).format(
                 *(answer + self.sensor_values)))
 
         self.energy -= Animal.ENERGY_FOR_EXIST
-        if self.energy / Animal.MAX_ENERGY > Animal.ENERGY_FULLNES_TO_BUD and random.random() < Animal.CHANGE_TO_BUD * (1.0 - len(self.world.animals)/30):
+        if self.energy / Animal.MAX_ENERGY > Animal.ENERGY_FULLNES_TO_BUD and random() < Animal.CHANGE_TO_BUD * (1.0 - len(self.world.animals) / World.World.MAX_ANIMAL_COUNT):
             self.bud()
 
         self.move(answer[0], answer[1])
 
     def bud(self):
         self.energy -= Animal.ENERGY_FOR_BUD
-        child = Animal(self.world)
-        child.x = self.x + random.randint(-15, 15)
-        child.y = self.y + random.randint(-15, 15)
-        child.brain = clone_brain(self.brain)
-        self.world.add_animal(child)
+        for _ in range(randint(2,5)):
+            child = Animal(self.world)
+            child.x = self.x + randint(-30, 30)
+            child.y = self.y + randint(-30, 30)
+            child.brain = clone_brain(self.brain)
+            self.world.add_animal(child)
 
     def eat(self, food):
         value = min(World.World.EATING_VALUE, max(0, Animal.MAX_ENERGY - self.energy))
@@ -146,6 +154,6 @@ def clone_brain(old_brain):
             old_neuron = old_layer[j]
             new_neuron = new_layer[j]
             if new_neuron.__class__ == Neuron:
-                new_neuron.w = [ w + (random.random()*0.2 - 0.1)*(random.random() < 0.2) for w in old_neuron.w ]
-                new_neuron.w0 = old_neuron.w0 + (random.random()*0.2 - 0.1)*(random.random() < 0.2)
+                new_neuron.w = [ w + (random()*Animal.MUTATE_VALUE - Animal.HALF_MUTATE_VALUE)*(random() < Animal.MUTATE_CHANCE) for w in old_neuron.w ]
+                new_neuron.w0 = old_neuron.w0 + (random()*Animal.MUTATE_VALUE - Animal.HALF_MUTATE_VALUE)*(random() < Animal.MUTATE_CHANCE)
     return brain

@@ -2,7 +2,7 @@ from Layer import InputLayer, Layer, Readiness
 
 
 class NeuralNetwork:
-    def __init__(self, shape, random_value=None):
+    def __init__(self, shape):
         self.layers = []
         self.shape = shape
         self.time = 0
@@ -18,6 +18,8 @@ class NeuralNetwork:
         self.layers.append(self.input_layer)
         self.layers.append(self.middle_layer)
         self.layers.append(self.output_layer)
+
+        self._reset_layers_states()
 
     def __len__(self):
         return len(self.shape)
@@ -47,3 +49,18 @@ class NeuralNetwork:
     def _reset_layers_states(self):
         for layer in self:
             layer.reset_state()
+
+    def teach_by_sample(self, database, teach_value=0.5):
+        err = 0
+        for inp, out in database:
+            net_out = self.calculate(inp)
+            self.output_layer.teach_output_layer_by_sample(teach_value, out)
+
+            # teach middle layers
+            self.middle_layer.teach_middle_layer(teach_value)
+
+            for layer in self:
+                layer.commit_teach()
+
+            err += sum([abs(no-o) for no, o in zip(net_out, out)])
+        return err

@@ -14,13 +14,26 @@ class Food(object):
     def __init__(self, x, y, size):
         self.x = x
         self.y = y
-        self.size = size
-        self.smell_size = self.size * Food.SMELL_SIZE_RATIO
+        self._size = size
+        self._smell_size = self._size * Food.SMELL_SIZE_RATIO
 
     def beating(self, size):
         value = min(self.size, size)
         self.size -= value
         return value
+
+    @property
+    def size(self):
+        return self._size
+
+    @size.setter
+    def size(self, value):
+        self._size = value
+        self._smell_size = self._size * Food.SMELL_SIZE_RATIO
+
+    @property
+    def smell_size(self):
+        return self._smell_size
 
 
 class Animal(object):

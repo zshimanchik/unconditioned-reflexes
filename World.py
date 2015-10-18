@@ -21,6 +21,8 @@ class World(object):
         self.animals_to_add = []
         # self.animals[0].DEBUG = True
         self.food = [Food(randint(3, self.width), randint(3, self.height), randint(4,10)) for _ in range(10)]
+
+        self.food_timer = 180
         self.time = 0
 
     def update(self):
@@ -39,14 +41,17 @@ class World(object):
         self.animals_to_add = []
         self.transform_dead_animals()
         self.clear_empty_food()
-        if len(self.food) < 10:
-            for _ in range(11 - len(self.food)):
+
+        # add some food some fixed time
+        if self.time % self.food_timer == 0:
+            for _ in range(3):
                 self.food.append(Food(randint(0, self.width), randint(0, self.height), randint(2,6)))
 
     def get_sensor_value(self, pos):
         max_smell = 0
         for food in self.food:
-            max_smell = max(max_smell, 1.0 - distance(food.x, food.y, pos[0], pos[1]) / food.smell_size)
+            if food.size > 0:
+                max_smell = max(max_smell, 1.0 - distance(food.x, food.y, pos[0], pos[1]) / food.smell_size)
         return max_smell
 
     def get_closest_food(self, x, y, max_distance):
@@ -73,7 +78,7 @@ class World(object):
     def transform_dead_animals(self):
         for animal in self.animals[:]:
             if animal.energy <= 0:
-                self.food.append(Food(randint(0, self.width),randint(0, self.height), animal.size))
+                # self.food.append(Food(randint(0, self.width),randint(0, self.height), animal.size))
                 self.animals.remove(animal)
 
     def clear_empty_food(self):

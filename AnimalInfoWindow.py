@@ -1,5 +1,3 @@
-__author__ = 'neuron'
-
 from gi.repository import Gtk, GObject
 from Animal import Animal
 

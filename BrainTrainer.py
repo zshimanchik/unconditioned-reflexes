@@ -1,6 +1,4 @@
-__author__ = 'neuron'
 from NeuralNetwork.NeuralNetwork import NeuralNetwork
-from NeuralNetwork.Neuron import Neuron
 
 
 global cbrain

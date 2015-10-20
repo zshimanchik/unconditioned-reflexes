@@ -63,4 +63,4 @@ class NeuralNetwork:
                 layer.commit_teach()
 
             err += sum([abs(no-o) for no, o in zip(net_out, out)])
-        return err
+        return err / len(database)

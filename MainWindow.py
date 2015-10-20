@@ -41,6 +41,8 @@ class gui():
 
         self.selected_animal = None
         self.is_food_smell = False
+        self.world_version = 0
+        self.restart_if_all_dead = True
 
         self.dbg_text = ""
 
@@ -95,10 +97,16 @@ class gui():
 
         self.drawing_area.queue_draw()
 
+        self.add_to_dbg("world version={}".format(self.world_version))
         self.add_to_dbg("animal count=" + str(len(self.world.animals)))
         self.add_to_dbg("world time={}".format(self.world.time))
         self.debug_lbl.set_text(self.dbg_text)
         self.dbg_text = ""
+
+        if self.restart_if_all_dead and len(self.world.animals) == 0:
+            self.world = World(200, 200)
+            self.world_version += 1
+
         return True
 
     def add_to_dbg(self, text):
@@ -123,6 +131,9 @@ class gui():
     def on_food_smell_checkbox_toggled(self, check_button):
         self.is_food_smell = check_button.get_active()
 
+    def on_restart_checkbox_toggled(self, check_button):
+        self.restart_if_all_dead = check_button.get_active()
+
     def on_menuitem1_activate(self, menuitem):
         if self.animal_info_window:
             self.animal_info_window.window.close()
@@ -132,6 +143,7 @@ class gui():
 
     def on_menuitem_restart_activate(self, menuitem):
         self.world = World(200, 200)
+        self.world_version += 1
 
     def on_action_group_changed(self, radiobutton):
         if radiobutton.get_active():

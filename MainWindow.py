@@ -1,4 +1,5 @@
 from World import World, distance
+from Animal import Animal
 from AnimalInfoWindow import AnimalInfoWindow
 
 
@@ -93,7 +94,8 @@ class gui():
 
         if self.animal_info_window:
             self.animal_info_window.update_graphics()
-            self.animal_info_window.drawing_area.queue_draw()
+            self.animal_info_window.drawing_area1.queue_draw()
+            self.animal_info_window.drawing_area2.queue_draw()
 
         self.drawing_area.queue_draw()
 
@@ -120,6 +122,9 @@ class gui():
 
     def on_food_timer_adj_value_changed(self, adj):
         self.world.food_timer = adj.get_value()
+
+    def on_adjustment1_value_changed(self, adj):
+        Animal.ENERGY_FULLNES_TO_BUD = adj.get_value()
 
     def on_pause_button_clicked(self, *args):
         if self.timer_id:

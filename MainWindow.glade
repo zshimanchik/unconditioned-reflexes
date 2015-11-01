@@ -3,9 +3,16 @@
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkAction" id="action1"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">1</property>
+    <property name="value">0.69999999999999996</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">0.29999999999999999</property>
+    <signal name="value-changed" handler="on_adjustment1_value_changed" swapped="no"/>
+  </object>
   <object class="GtkAdjustment" id="food_timer_adj">
     <property name="lower">20</property>
-    <property name="upper">500</property>
+    <property name="upper">5000</property>
     <property name="value">180</property>
     <property name="step_increment">20</property>
     <property name="page_increment">50</property>
@@ -195,6 +202,35 @@
                   <packing>
                     <property name="x">5</property>
                     <property name="y">69</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="spinbutton3">
+                    <property name="width_request">122</property>
+                    <property name="height_request">33</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="input_purpose">alpha</property>
+                    <property name="adjustment">adjustment1</property>
+                    <property name="digits">2</property>
+                    <property name="value">0.69999999999999996</property>
+                  </object>
+                  <packing>
+                    <property name="x">7</property>
+                    <property name="y">169</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label2">
+                    <property name="width_request">122</property>
+                    <property name="height_request">22</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">min energy for bud</property>
+                  </object>
+                  <packing>
+                    <property name="x">7</property>
+                    <property name="y">149</property>
                   </packing>
                 </child>
               </object>

@@ -37,7 +37,7 @@ class Food(object):
 
 class Animal(object):
     DEBUG = False
-    MAX_ENERGY = 20
+    MAX_ENERGY = 30
     ENERGY_FOR_EXIST = 0.007
     MOVE_ENERGY_RATIO = 0.01
 
@@ -47,9 +47,12 @@ class Animal(object):
     HEAD_ANGLE = math.pi / 4.0
     HALF_HEAD_ANGLE = HEAD_ANGLE / 2.0
 
+    READINESS_TO_BUD_THREADSHOULD = 30
+    READINESS_TO_BUD_INCREASEMENT = 0.2
     ENERGY_FULLNES_TO_BUD = 0.7
-    CHANGE_TO_BUD = 0.005
-    ENERGY_FOR_BUD = 2
+    ENERGY_FOR_BUD = 5
+    MIN_CHILD_COUNT = 1
+    MAX_CHILD_COUNT = 3
 
     MUTATE_VALUE = 0.4
     HALF_MUTATE_VALUE = MUTATE_VALUE / 2
@@ -69,7 +72,8 @@ class Animal(object):
         self._sensors_positions = []
         self._sensors_positions_calculated = False
 
-        self.energy = 10
+        self.energy = self.ENERGY_FOR_BUD
+        self.readiness_to_bud = 0
 
         self.brain = NeuralNetwork([self.sensor_count, 2, 2])
         # import BrainTrainer
@@ -104,21 +108,28 @@ class Animal(object):
 
     def update(self, sensor_values):
         self.sensor_values = sensor_values
-        answer = self.brain.calculate(sensor_values)
+        answer = self.brain.calculate(self.sensor_values)
         self.answer = answer
-        if self.DEBUG:
-            print(("answ=" + "{:.6f} " * len(answer) + "\tinp=" + "{:.6f} " * len(self.sensor_values)).format(
-                *(answer + self.sensor_values)))
 
         self.energy -= Animal.ENERGY_FOR_EXIST
-        if self.energy / Animal.MAX_ENERGY > Animal.ENERGY_FULLNES_TO_BUD and random() < Animal.CHANGE_TO_BUD * (1.0 - len(self.world.animals) / World.World.MAX_ANIMAL_COUNT):
+
+        if self.energy / Animal.MAX_ENERGY > Animal.ENERGY_FULLNES_TO_BUD:
+            self.readiness_to_bud += Animal.READINESS_TO_BUD_INCREASEMENT
+        if self.readiness_to_bud >= Animal.READINESS_TO_BUD_THREADSHOULD:
+            self.readiness_to_bud = 0
             self.bud()
 
         self.move(answer[0], answer[1])
 
     def bud(self):
-        self.energy -= Animal.ENERGY_FOR_BUD
-        for _ in range(randint(2,5)):
+        child_count = randint(Animal.MIN_CHILD_COUNT, Animal.MAX_CHILD_COUNT)
+        # if it tries to bud more child than it can - bud so many as it can and die.
+        if child_count*Animal.ENERGY_FOR_BUD > self.energy:
+            child_count = int(self.energy / Animal.ENERGY_FOR_BUD)
+            self.energy = 0
+
+        for _ in range(child_count):
+            self.energy -= Animal.ENERGY_FOR_BUD
             child = Animal(self.world)
             child.x = self.x + randint(-30, 30)
             child.y = self.y + randint(-30, 30)

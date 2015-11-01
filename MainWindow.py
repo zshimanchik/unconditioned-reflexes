@@ -104,7 +104,7 @@ class gui():
         self.dbg_text = ""
 
         if self.restart_if_all_dead and len(self.world.animals) == 0:
-            self.world = World(200, 200)
+            self.world.restart()
             self.world_version += 1
 
         return True
@@ -142,7 +142,7 @@ class gui():
         self.animal_info_window.window.move(pos[0] + self.window.get_allocated_width(), pos[1])
 
     def on_menuitem_restart_activate(self, menuitem):
-        self.world = World(200, 200)
+        self.world.restart()
         self.world_version += 1
 
     def on_action_group_changed(self, radiobutton):

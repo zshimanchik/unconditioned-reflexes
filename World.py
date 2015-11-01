@@ -17,12 +17,14 @@ class World(object):
         self.width = width
         self.height = height
 
+        self.restart()
+        self.food_timer = 180
+
+    def restart(self):
         self.animals = [Animal(self) for _ in range(10)]
         self.animals_to_add = []
-        # self.animals[0].DEBUG = True
         self.food = [Food(randint(3, self.width), randint(3, self.height), randint(4,10)) for _ in range(10)]
 
-        self.food_timer = 180
         self.time = 0
 
     def update(self):
